@@ -1,0 +1,7 @@
+{
+  "name": "5MAXX Institutional",
+  "description": "Plataforma institucional de soluções tecnológicas 5MAXX. Catálogo premium com especificações técnicas e suporte a vídeo.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
