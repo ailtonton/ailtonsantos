@@ -1,9 +1,62 @@
 
 import React, { useState, useEffect } from 'react';
-import { Camera, Search, X, Info, ChevronRight, Box, Menu, LayoutGrid, Layers, Scissors, Tag, Sparkles, Loader2, RefreshCw, Download, Trophy, CheckCircle2, AlertCircle, HelpCircle, MapPin, Store, Phone, LogOut } from 'lucide-react';
+import { Camera, Search, X, Info, ChevronRight, Box, Menu, LayoutGrid, Layers, Scissors, Tag, Sparkles, Loader2, RefreshCw, Download, Trophy, CheckCircle2, AlertCircle, HelpCircle, MapPin, Store, Phone, LogOut, Brain, RefreshCcw, XCircle } from 'lucide-react';
 import { Product, Resale, ResaleStock } from '../types';
 import { apiService } from '../services/apiService';
 import Scanner from './Scanner';
+
+const QUIZ_QUESTIONS = [
+  {
+    question: "Qual a temperatura ideal do soprador térmico para a 'quebra de memória' do vinil cast?",
+    options: ["50°C", "90°C a 100°C", "150°C", "200°C"],
+    correct: 1
+  },
+  {
+    question: "Qual ferramenta é essencial para garantir a adesão em canaletas profundas e evitar o efeito 'ponte'?",
+    options: ["Espátula de feltro", "Rolete de pressão (moldador)", "Estilete 45°", "Imã de neodímio"],
+    correct: 1
+  },
+  {
+    question: "O que significa o termo 'Outgassing' em comunicação visual?",
+    options: ["Secagem rápida da tinta UV", "Liberação de gases do solvente após impressão", "Limpeza química do substrato", "Aplicação de verniz protetor"],
+    correct: 1
+  },
+  {
+    question: "Qual o ângulo ideal da lâmina do estilete para cortes de precisão em envelopamento automotivo?",
+    options: ["45 graus", "60 graus", "30 graus", "90 graus"],
+    correct: 2
+  },
+  {
+    question: "Para que serve o Primer 94 em aplicações de vinil adesivo?",
+    options: ["Limpar a superfície", "Aumentar a adesão em bordas e áreas críticas", "Remover resíduos de cola antiga", "Dar brilho final ao material"],
+    correct: 1
+  },
+  {
+    question: "Qual a principal vantagem do vinil Cast sobre o Calandrado?",
+    options: ["É mais barato", "Não possui memória elástica e é altamente moldável", "É mais espesso e resistente a rasgos", "Seca mais rápido após a impressão"],
+    correct: 1
+  },
+  {
+    question: "O que é o 'Post-Heating' no processo de envelopamento?",
+    options: ["Aquecer o material antes de aplicar", "Aquecer o material após a aplicação para fixar a nova forma", "Secar o veículo após a lavagem técnica", "Remover bolhas com agulha quente"],
+    correct: 1
+  },
+  {
+    question: "Qual produto é o mais recomendado para a descontaminação final antes da aplicação?",
+    options: ["Detergente neutro", "Álcool Isopropílico 70% ou 99%", "Querosene", "Solvente de limpeza de cabeças"],
+    correct: 1
+  },
+  {
+    question: "Em um painel de ACM, qual a ferramenta correta para realizar o vinco de dobra?",
+    options: ["Estilete de precisão", "Fresa em 'V' ou Tupia", "Tesoura de chapa", "Dobradora térmica"],
+    correct: 1
+  },
+  {
+    question: "O que é o 'Silvering' em um processo de laminação a frio?",
+    options: ["Efeito metalizado no acabamento", "Pequenas bolhas de ar presas que parecem pontos prateados", "Desbotamento precoce da cor", "Acúmulo de estática no material"],
+    correct: 1
+  }
+];
 
 interface CatalogAppProps {
   products: Product[];
@@ -19,6 +72,41 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
+
+  // Quiz State
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [quizFinished, setQuizFinished] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [isAnswered, setIsAnswered] = useState(false);
+
+  const handleAnswer = (index: number) => {
+    if (isAnswered) return;
+    setSelectedOption(index);
+    setIsAnswered(true);
+    if (index === QUIZ_QUESTIONS[currentQuestion].correct) {
+      setScore(prev => prev + 1);
+    }
+  };
+
+  const nextQuestion = () => {
+    if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
+      setCurrentQuestion(prev => prev + 1);
+      setSelectedOption(null);
+      setIsAnswered(false);
+    } else {
+      setQuizFinished(true);
+    }
+  };
+
+  const resetQuiz = () => {
+    setCurrentQuestion(0);
+    setScore(0);
+    setQuizFinished(false);
+    setSelectedOption(null);
+    setIsAnswered(false);
+  };
 
   useEffect(() => {
     const loadResales = async () => {
@@ -178,6 +266,27 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
             </div>
           )}
         </div>
+
+        {/* Quiz Banner */}
+        <div className="mt-12 mb-8">
+          <button 
+            onClick={() => { setShowQuiz(true); resetQuiz(); }}
+            className="w-full bg-gradient-to-r from-amber-500 to-amber-600 p-8 rounded-[2.5rem] flex items-center justify-between group overflow-hidden relative"
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+            <div className="relative z-10 text-left">
+              <div className="flex items-center gap-2 mb-2">
+                <Brain className="text-black" size={20} />
+                <span className="text-[10px] font-black text-black/60 uppercase tracking-widest">Desafio 5MAXX</span>
+              </div>
+              <h3 className="text-2xl font-black italic text-black uppercase tracking-tighter leading-none">Teste seu Conhecimento</h3>
+              <p className="text-black/60 text-[9px] font-bold uppercase tracking-widest mt-2">Envelopamento & Ferramentas</p>
+            </div>
+            <div className="bg-black w-12 h-12 rounded-2xl flex items-center justify-center group-hover:translate-x-1 transition-transform relative z-10">
+              <ChevronRight className="text-amber-500" size={24} />
+            </div>
+          </button>
+        </div>
       </main>
 
       {/* Modal Onde Encontrar */}
@@ -215,9 +324,14 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
                           <Phone size={16} />
                           <span className="text-[10px] font-black uppercase">Ligar</span>
                        </a>
-                       <button className="flex-1 bg-amber-500 text-black p-4 rounded-2xl flex items-center justify-center gap-2 font-black text-[10px] uppercase shadow-lg shadow-amber-500/10">
+                       <a 
+                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${r.nome}, ${r.endereco}, ${r.cidade}`)}`}
+                         target="_blank"
+                         rel="noopener noreferrer"
+                         className="flex-1 bg-amber-500 text-black p-4 rounded-2xl flex items-center justify-center gap-2 font-black text-[10px] uppercase shadow-lg shadow-amber-500/10 hover:scale-105 transition-all"
+                       >
                           <MapPin size={16} /> Rota
-                       </button>
+                       </a>
                     </div>
                   </div>
                 ))}
@@ -273,6 +387,103 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
       )}
       
       {isScanning && <Scanner onScan={(code) => { const f = products.find(p => p.sku === code); if (f) setSelectedProduct(f); setIsScanning(false); }} onClose={() => setIsScanning(false)} />}
+
+      {/* Quiz Modal */}
+      {showQuiz && (
+        <div className="fixed inset-0 bg-black z-[300] flex flex-col">
+          <header className="p-8 flex justify-between items-center border-b border-white/10">
+            <div>
+              <h3 className="text-xl font-black italic uppercase tracking-tighter">Expert Quiz</h3>
+              <p className="text-[9px] font-black text-white/30 uppercase tracking-widest">Questão {currentQuestion + 1} de {QUIZ_QUESTIONS.length}</p>
+            </div>
+            <button onClick={() => setShowQuiz(false)} className="text-white/40 hover:text-white"><X size={28} /></button>
+          </header>
+
+          <main className="flex-1 p-8 flex flex-col justify-center max-w-sm mx-auto w-full">
+            {!quizFinished ? (
+              <div className="animate-fade-in">
+                <div className="mb-10">
+                  <h2 className="text-2xl font-black italic uppercase leading-tight text-white mb-8">
+                    {QUIZ_QUESTIONS[currentQuestion].question}
+                  </h2>
+                  <div className="space-y-4">
+                    {QUIZ_QUESTIONS[currentQuestion].options.map((option, idx) => {
+                      let btnClass = "w-full p-6 rounded-3xl border text-left transition-all flex justify-between items-center ";
+                      if (!isAnswered) {
+                        btnClass += "border-white/10 bg-white/5 hover:border-white/30 hover:bg-white/10";
+                      } else {
+                        if (idx === QUIZ_QUESTIONS[currentQuestion].correct) {
+                          btnClass += "border-emerald-500 bg-emerald-500/10 text-emerald-500";
+                        } else if (idx === selectedOption) {
+                          btnClass += "border-red-500 bg-red-500/10 text-red-500";
+                        } else {
+                          btnClass += "border-white/5 bg-white/5 opacity-40";
+                        }
+                      }
+
+                      return (
+                        <button 
+                          key={idx}
+                          onClick={() => handleAnswer(idx)}
+                          disabled={isAnswered}
+                          className={btnClass}
+                        >
+                          <span className="text-xs font-bold uppercase tracking-wide">{option}</span>
+                          {isAnswered && idx === QUIZ_QUESTIONS[currentQuestion].correct && <CheckCircle2 size={18} />}
+                          {isAnswered && idx === selectedOption && idx !== QUIZ_QUESTIONS[currentQuestion].correct && <XCircle size={18} />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {isAnswered && (
+                  <button 
+                    onClick={nextQuestion}
+                    className="w-full bg-white text-black py-6 rounded-3xl font-black uppercase text-xs tracking-widest flex items-center justify-center gap-3 animate-slide-up"
+                  >
+                    {currentQuestion === QUIZ_QUESTIONS.length - 1 ? 'Ver Resultado' : 'Próxima Questão'}
+                    <ChevronRight size={18} />
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="text-center animate-scale-in">
+                <div className="w-24 h-24 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-8 border border-amber-500/30">
+                  <Trophy size={48} className="text-amber-500" />
+                </div>
+                <h2 className="text-4xl font-black italic uppercase text-white mb-2">Resultado Final</h2>
+                <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em] mb-10">Sua pontuação no teste</p>
+                
+                <div className="text-7xl font-black italic text-white mb-4">
+                  {score}<span className="text-2xl text-white/20">/{QUIZ_QUESTIONS.length}</span>
+                </div>
+                
+                <p className="text-white/60 text-sm mb-12 px-6">
+                  {score >= 8 ? "Parabéns! Você é um verdadeiro mestre do envelopamento." : 
+                   score >= 5 ? "Bom trabalho! Você tem um bom conhecimento técnico." : 
+                   "Continue estudando! O mercado de comunicação visual exige precisão."}
+                </p>
+
+                <div className="space-y-4">
+                  <button 
+                    onClick={resetQuiz}
+                    className="w-full bg-white text-black py-6 rounded-3xl font-black uppercase text-xs tracking-widest flex items-center justify-center gap-3"
+                  >
+                    <RefreshCcw size={18} /> Tentar Novamente
+                  </button>
+                  <button 
+                    onClick={() => setShowQuiz(false)}
+                    className="w-full py-4 text-white/30 font-black uppercase text-[10px] tracking-widest"
+                  >
+                    Voltar ao Catálogo
+                  </button>
+                </div>
+              </div>
+            )}
+          </main>
+        </div>
+      )}
     </div>
   );
 };
