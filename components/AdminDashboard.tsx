@@ -94,7 +94,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, setProducts, 
       cidade: formData.get('cidade') as string,
       telefone: formData.get('telefone') as string,
       lat: -23.5, // Default for demo
-      lng: -46.6
+      lng: -46.6,
+      login: formData.get('login') as string,
+      password: formData.get('password') as string
     };
     const saved = await apiService.saveResale(data);
     setResales(prev => editingResale ? prev.map(r => r.id === saved.id ? saved : r) : [saved, ...prev]);
@@ -374,6 +376,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, setProducts, 
               <div>
                 <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Telefone de Contato</label>
                 <input name="telefone" defaultValue={editingResale?.telefone} required className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 outline-none focus:border-white text-white font-bold" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Login de Acesso</label>
+                  <input name="login" defaultValue={editingResale?.login} required className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 outline-none focus:border-white text-white font-bold" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Senha</label>
+                  <input name="password" type="password" defaultValue={editingResale?.password} required className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 outline-none focus:border-white text-white font-bold" />
+                </div>
               </div>
             </div>
             <div className="flex gap-4 mt-12">

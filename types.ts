@@ -1,7 +1,8 @@
 
 export enum UserRole {
   SHOPKEEPER = 'SHOPKEEPER',
-  ADMIN = 'ADMIN'
+  ADMIN = 'ADMIN',
+  RESALE = 'RESALE'
 }
 
 export interface Product {
@@ -27,6 +28,8 @@ export interface Resale {
   telefone: string;
   lat: number;
   lng: number;
+  login?: string;
+  password?: string;
 }
 
 export interface ResaleStock {

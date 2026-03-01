@@ -111,7 +111,9 @@ export const apiService = {
       cidade: r.cidade,
       telefone: r.telefone,
       lat: r.lat,
-      lng: r.lng
+      lng: r.lng,
+      login: r.login,
+      password: r.password
     }));
   },
 
@@ -122,7 +124,9 @@ export const apiService = {
       cidade: resale.cidade,
       telefone: resale.telefone,
       lat: resale.lat,
-      lng: resale.lng
+      lng: resale.lng,
+      login: resale.login,
+      password: resale.password
     };
 
     let result;
@@ -152,7 +156,32 @@ export const apiService = {
       cidade: result.cidade,
       telefone: result.telefone,
       lat: result.lat,
-      lng: result.lng
+      lng: result.lng,
+      login: result.login,
+      password: result.password
+    };
+  },
+
+  async loginResale(login: string, pass: string): Promise<Resale | null> {
+    const { data, error } = await supabase
+      .from('resales')
+      .select('*')
+      .eq('login', login)
+      .eq('password', pass)
+      .single();
+
+    if (error || !data) return null;
+
+    return {
+      id: data.id,
+      nome: data.nome,
+      endereco: data.endereco,
+      cidade: data.cidade,
+      telefone: data.telefone,
+      lat: data.lat,
+      lng: data.lng,
+      login: data.login,
+      password: data.password
     };
   },
 

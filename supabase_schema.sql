@@ -26,6 +26,8 @@ CREATE TABLE IF NOT EXISTS resales (
   telefone TEXT,
   lat DOUBLE PRECISION,
   lng DOUBLE PRECISION,
+  login TEXT UNIQUE,
+  password TEXT,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 

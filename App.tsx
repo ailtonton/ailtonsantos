@@ -3,15 +3,20 @@ import React, { useState, useEffect } from 'react';
 import { UserRole, Product } from './types';
 import CatalogApp from './components/CatalogApp';
 import AdminDashboard from './components/AdminDashboard';
+import ResaleDashboard from './components/ResaleDashboard';
 import { apiService } from './services/apiService';
-import { ShieldCheck, ArrowRight, Loader2, Cpu, X } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Loader2, Cpu, X, Store } from 'lucide-react';
+import { Resale } from './types';
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdminMode, setIsAdminMode] = useState(false);
+  const [isResaleMode, setIsResaleMode] = useState(false);
+  const [currentResale, setCurrentResale] = useState<Resale | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [loginType, setLoginType] = useState<'admin' | 'resale'>('admin');
   const [adminCredentials, setAdminCredentials] = useState({ user: '', pass: '' });
   const [loginError, setLoginError] = useState(false);
 
@@ -31,15 +36,28 @@ const App: React.FC = () => {
     loadData();
   }, []);
 
-  const handleAdminLogin = (e: React.FormEvent) => {
+  const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (adminCredentials.user === 'admin' && adminCredentials.pass === '5maxx2024') {
-      setIsAdminMode(true);
-      setIsLoggedIn(true);
-      setShowAdminLogin(false);
-      setLoginError(false);
+    if (loginType === 'admin') {
+      if (adminCredentials.user === 'admin' && adminCredentials.pass === '5maxx2024') {
+        setIsAdminMode(true);
+        setIsLoggedIn(true);
+        setShowAdminLogin(false);
+        setLoginError(false);
+      } else {
+        setLoginError(true);
+      }
     } else {
-      setLoginError(true);
+      const resale = await apiService.loginResale(adminCredentials.user, adminCredentials.pass);
+      if (resale) {
+        setCurrentResale(resale);
+        setIsResaleMode(true);
+        setIsLoggedIn(true);
+        setShowAdminLogin(false);
+        setLoginError(false);
+      } else {
+        setLoginError(true);
+      }
     }
   };
 
@@ -51,6 +69,8 @@ const App: React.FC = () => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setIsAdminMode(false);
+    setIsResaleMode(false);
+    setCurrentResale(null);
   };
 
   if (isLoading) {
@@ -126,7 +146,20 @@ const App: React.FC = () => {
               <div className="text-center mb-8">
                 <ShieldCheck size={48} className="text-amber-500 mx-auto mb-4" />
                 <h3 className="text-2xl font-black italic uppercase tracking-tighter text-white">Acesso Restrito</h3>
-                <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mt-2">Identifique-se para continuar</p>
+                <div className="flex bg-white/5 p-1 rounded-xl mt-6 border border-white/10">
+                  <button 
+                    onClick={() => { setLoginType('admin'); setLoginError(false); }}
+                    className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${loginType === 'admin' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
+                  >
+                    Administrador
+                  </button>
+                  <button 
+                    onClick={() => { setLoginType('resale'); setLoginError(false); }}
+                    className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${loginType === 'resale' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
+                  >
+                    Revenda
+                  </button>
+                </div>
               </div>
 
               <form onSubmit={handleAdminLogin} className="space-y-4">
@@ -178,6 +211,12 @@ const App: React.FC = () => {
           products={products} 
           setProducts={setProducts} 
           onLogout={handleLogout} 
+        />
+      ) : isResaleMode && currentResale ? (
+        <ResaleDashboard 
+          resale={currentResale}
+          products={products}
+          onLogout={handleLogout}
         />
       ) : (
         <CatalogApp 
