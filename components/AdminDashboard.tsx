@@ -52,7 +52,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, setProducts, 
       barcode: formData.get('sku') as string,
       ncm: formData.get('ncm') as string,
       imageUrl: formData.get('imageUrl') as string || 'https://images.unsplash.com/photo-1584583011663-8f6458428876?auto=format&fit=crop&q=80&w=800',
-      youtubeUrl: formData.get('youtubeUrl') as string
+      youtubeUrl: formData.get('youtubeUrl') as string || ''
     };
     const saved = await apiService.saveProduct(data);
     setProducts(prev => editingProduct ? prev.map(p => p.id === saved.id ? saved : p) : [saved, ...prev]);
@@ -61,15 +61,25 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, setProducts, 
   };
 
   const handleDeleteProduct = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir este produto?')) return;
-    await apiService.deleteProduct(id);
-    setProducts(prev => prev.filter(p => p.id !== id));
+    try {
+      if (!window.confirm('Tem certeza que deseja excluir este produto?')) return;
+      await apiService.deleteProduct(id);
+      setProducts(prev => prev.filter(p => p.id !== id));
+    } catch (error) {
+      console.error("Erro ao excluir produto:", error);
+      alert("Erro ao excluir produto.");
+    }
   };
 
   const handleDeleteResale = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir esta revenda?')) return;
-    await apiService.deleteResale(id);
-    setResales(prev => prev.filter(r => r.id !== id));
+    try {
+      if (!window.confirm('Tem certeza que deseja excluir esta revenda?')) return;
+      await apiService.deleteResale(id);
+      setResales(prev => prev.filter(r => r.id !== id));
+    } catch (error) {
+      console.error("Erro ao excluir revenda:", error);
+      alert("Erro ao excluir revenda.");
+    }
   };
 
   const handleSaveResale = async (e: React.FormEvent) => {
@@ -320,6 +330,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, setProducts, 
               <div className="col-span-2">
                 <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">URL da Imagem</label>
                 <input name="imageUrl" defaultValue={editingProduct?.imageUrl} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 outline-none focus:border-white text-white font-bold" placeholder="https://..." />
+              </div>
+              <div className="col-span-2">
+                <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Link do Vídeo (YouTube)</label>
+                <input name="youtubeUrl" defaultValue={editingProduct?.youtubeUrl} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 outline-none focus:border-white text-white font-bold" placeholder="https://youtube.com/watch?v=..." />
               </div>
               <div className="col-span-2">
                 <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Descrição Técnica</label>

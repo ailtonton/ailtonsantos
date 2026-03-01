@@ -45,6 +45,13 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
     }).filter(r => r.qty > 0);
   };
 
+  const getYoutubeId = (url: string) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
   return (
     <div className="max-w-md mx-auto min-h-screen bg-black flex flex-col relative pb-24 overflow-x-hidden border-x border-white/5 font-sans">
       
@@ -235,10 +242,25 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
                 <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter leading-tight">{selectedProduct.nome}</h3>
               </div>
             </div>
-            <div className="bg-white/5 p-6 rounded-3xl mb-10 border border-white/5">
+            <div className="bg-white/5 p-6 rounded-3xl mb-6 border border-white/5">
                <p className="text-[9px] font-black text-white/20 uppercase tracking-widest mb-3">Descrição Premium</p>
                <p className="text-white/60 text-sm leading-relaxed">{selectedProduct.descricaoTecnica}</p>
             </div>
+
+            {selectedProduct.youtubeUrl && getYoutubeId(selectedProduct.youtubeUrl) && (
+              <div className="mb-8 rounded-3xl overflow-hidden border border-white/10 aspect-video bg-black">
+                <iframe 
+                  width="100%" 
+                  height="100%" 
+                  src={`https://www.youtube.com/embed/${getYoutubeId(selectedProduct.youtubeUrl)}`}
+                  title="YouTube video player" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowFullScreen
+                ></iframe>
+              </div>
+            )}
+
             <button 
               onClick={() => setShowMapModal(true)}
               className="w-full bg-amber-500 text-black py-6 rounded-3xl font-black uppercase text-xs tracking-widest flex items-center justify-center gap-3 shadow-2xl active:scale-95 transition-all"
