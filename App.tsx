@@ -97,7 +97,7 @@ const App: React.FC = () => {
         <div className="w-full max-w-lg text-center z-10 space-y-12">
           <div className="flex flex-col items-center">
             <div className="mb-4">
-               <img src="/logo.png" alt="5MAXX" className="h-16 object-contain" referrerPolicy="no-referrer" />
+               <img src="https://i.ibb.co/yBXgVXNR/logo.png" alt="5MAXX" className="h-16 object-contain" referrerPolicy="no-referrer" />
             </div>
             <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-amber-500 to-transparent opacity-50 mt-6"></div>
           </div>

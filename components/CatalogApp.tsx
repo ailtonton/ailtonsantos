@@ -265,7 +265,7 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
             <Menu size={28} />
           </button>
           <div className="flex flex-col items-center">
-             <img src="/logo.png" alt="5MAXX" className="h-10 object-contain" referrerPolicy="no-referrer" />
+             <img src="https://i.ibb.co/yBXgVXNR/logo.png" alt="5MAXX" className="h-10 object-contain" referrerPolicy="no-referrer" />
           </div>
           <button onClick={() => setIsScanning(true)} className="p-2 -mr-2 text-white hover:opacity-70 transition-opacity">
             <Camera size={26} />
