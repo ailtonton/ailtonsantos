@@ -96,7 +96,7 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
     doc.rect(0, 0, 297, 210, 'F');
 
     // Border
-    doc.setDrawColor(245, 158, 11); // Amber-500
+    doc.setDrawColor(175, 145, 93); // Gold (#af915d)
     doc.setLineWidth(2);
     doc.rect(10, 10, 277, 190);
     doc.setLineWidth(0.5);
@@ -107,7 +107,7 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
     doc.setFontSize(30);
     doc.text('CERTIFICADO DE EXCELÊNCIA', 148.5, 45, { align: 'center' });
 
-    doc.setDrawColor(245, 158, 11);
+    doc.setDrawColor(175, 145, 93);
     doc.line(80, 52, 217, 52);
 
     // Body text
@@ -116,7 +116,7 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
     doc.text('e excelência na aplicação de envelopamento automotivo.', 148.5, 83, { align: 'center' });
 
     // Name
-    doc.setTextColor(245, 158, 11);
+    doc.setTextColor(175, 145, 93);
     doc.setFontSize(32);
     doc.text(userName.toUpperCase(), 148.5, 105, { align: 'center' });
 
@@ -125,7 +125,7 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
     doc.setFontSize(14);
     doc.text('Conferimos, portanto, o título de', 148.5, 125, { align: 'center' });
 
-    doc.setTextColor(245, 158, 11);
+    doc.setTextColor(175, 145, 93);
     doc.setFontSize(36);
     doc.text('MESTRE ENVELOPADOR', 148.5, 145, { align: 'center' });
 
@@ -136,7 +136,7 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
 
     // Footer
     doc.setFontSize(10);
-    doc.text('5MAXX INNOVATING BEYOND - ' + new Date().toLocaleDateString('pt-BR'), 148.5, 185, { align: 'center' });
+    doc.text('5MAXX - ' + new Date().toLocaleDateString('pt-BR'), 148.5, 185, { align: 'center' });
 
     doc.save(`Certificado_5MAXX_${userName.replace(/\s+/g, '_')}.pdf`);
   };
@@ -216,7 +216,7 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
         <aside className={`relative w-72 bg-zinc-950 h-full shadow-2xl transition-transform duration-300 ease-out flex flex-col border-r border-white/10 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
           <div className="p-8 border-b border-white/5">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-black italic tracking-tighter text-white">5MAXX</h2>
+              <img src="/logo.png" alt="5MAXX" className="h-8 object-contain" referrerPolicy="no-referrer" />
               <button onClick={() => setIsMenuOpen(false)} className="text-white/40 hover:text-white"><X size={24} /></button>
             </div>
             <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.3em]">Menu de Navegação</p>
@@ -265,8 +265,7 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
             <Menu size={28} />
           </button>
           <div className="flex flex-col items-center">
-             <h1 className="text-4xl font-black italic tracking-tighter leading-none text-white">5MAXX</h1>
-             <span className="text-[7px] font-light tracking-[0.4em] uppercase opacity-40 mt-1">Innovating Beyond</span>
+             <img src="/logo.png" alt="5MAXX" className="h-10 object-contain" referrerPolicy="no-referrer" />
           </div>
           <button onClick={() => setIsScanning(true)} className="p-2 -mr-2 text-white hover:opacity-70 transition-opacity">
             <Camera size={26} />
@@ -407,8 +406,8 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
 
       {/* Ficha Técnica Modal */}
       {selectedProduct && !showMapModal && (
-        <div className="fixed inset-0 bg-black/95 backdrop-blur-xl z-[110] flex items-end">
-          <div className="bg-zinc-950 w-full max-w-md mx-auto rounded-t-[3.5rem] p-10 animate-slide-up shadow-2xl border-t border-white/10">
+        <div className="fixed inset-0 bg-black/95 backdrop-blur-xl z-[110] flex items-end justify-center">
+          <div className="bg-zinc-950 w-full max-w-md rounded-t-[3.5rem] p-10 animate-slide-up shadow-2xl border-t border-white/10 overflow-y-auto max-h-[95vh]">
             <div className="flex justify-center mb-8"><div className="w-16 h-1 bg-white/10 rounded-full"></div></div>
             <div className="flex gap-6 mb-10">
               <img src={selectedProduct.imageUrl} className="w-28 h-28 rounded-3xl object-cover border border-white/10" />

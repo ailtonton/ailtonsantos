@@ -97,8 +97,7 @@ const App: React.FC = () => {
         <div className="w-full max-w-lg text-center z-10 space-y-12">
           <div className="flex flex-col items-center">
             <div className="mb-4">
-               <h1 className="text-7xl font-black italic tracking-tighter text-white">5MAXX</h1>
-               <p className="text-white text-sm font-light tracking-[0.4em] uppercase mt-[-0.5rem] bg-gradient-to-r from-amber-200 via-yellow-500 to-amber-700 bg-clip-text text-transparent">Innovating Beyond</p>
+               <img src="/logo.png" alt="5MAXX" className="h-16 object-contain" referrerPolicy="no-referrer" />
             </div>
             <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-amber-500 to-transparent opacity-50 mt-6"></div>
           </div>

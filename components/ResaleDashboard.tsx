@@ -64,7 +64,7 @@ const ResaleDashboard: React.FC<ResaleDashboardProps> = ({ resale, products, onL
         <div className="max-w-5xl mx-auto flex justify-between items-center">
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <Package className="text-amber-500" size={24} />
+              <img src="/logo.png" alt="5MAXX" className="h-6 object-contain" referrerPolicy="no-referrer" />
               <h1 className="text-2xl font-black italic tracking-tighter uppercase">Painel de Revenda</h1>
             </div>
             <p className="text-[10px] font-bold text-white/40 uppercase tracking-[0.3em]">{resale.nome}</p>

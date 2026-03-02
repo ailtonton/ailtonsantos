@@ -120,7 +120,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, setProducts, 
         <div className="p-8 flex items-center justify-between">
           {isSidebarOpen && (
             <div className="flex flex-col">
-              <h1 className="text-3xl font-black italic tracking-tighter">5MAXX</h1>
+              <img src="/logo.png" alt="5MAXX" className="h-8 object-contain" referrerPolicy="no-referrer" />
               <span className="text-[8px] font-light tracking-[0.2em] uppercase opacity-40">Admin Panel</span>
             </div>
           )}
