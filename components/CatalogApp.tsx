@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { jsPDF } from 'jspdf';
 import { Camera, Search, X, Info, ChevronRight, Box, Menu, LayoutGrid, Layers, Scissors, Tag, Sparkles, Loader2, RefreshCw, Download, Trophy, CheckCircle2, AlertCircle, HelpCircle, MapPin, Store, Phone, LogOut, Brain, RefreshCcw, XCircle } from 'lucide-react';
 import { Product, Resale, ResaleStock } from '../types';
 import { apiService } from '../services/apiService';
@@ -80,6 +81,65 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
   const [quizFinished, setQuizFinished] = useState(false);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [quizStarted, setQuizStarted] = useState(false);
+
+  const generateCertificate = () => {
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    // Background
+    doc.setFillColor(10, 10, 10);
+    doc.rect(0, 0, 297, 210, 'F');
+
+    // Border
+    doc.setDrawColor(245, 158, 11); // Amber-500
+    doc.setLineWidth(2);
+    doc.rect(10, 10, 277, 190);
+    doc.setLineWidth(0.5);
+    doc.rect(13, 13, 271, 184);
+
+    // Title
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(30);
+    doc.text('CERTIFICADO DE EXCELÊNCIA', 148.5, 45, { align: 'center' });
+
+    doc.setDrawColor(245, 158, 11);
+    doc.line(80, 52, 217, 52);
+
+    // Body text
+    doc.setFontSize(16);
+    doc.text('Certificamos que o profissional abaixo demonstrou competência técnica', 148.5, 75, { align: 'center' });
+    doc.text('e excelência na aplicação de envelopamento automotivo.', 148.5, 83, { align: 'center' });
+
+    // Name
+    doc.setTextColor(245, 158, 11);
+    doc.setFontSize(32);
+    doc.text(userName.toUpperCase(), 148.5, 105, { align: 'center' });
+
+    // Title conferred
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(14);
+    doc.text('Conferimos, portanto, o título de', 148.5, 125, { align: 'center' });
+
+    doc.setTextColor(245, 158, 11);
+    doc.setFontSize(36);
+    doc.text('MESTRE ENVELOPADOR', 148.5, 145, { align: 'center' });
+
+    // Recognition
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(14);
+    doc.text('Em reconhecimento à sua habilidade e alto padrão de qualidade.', 148.5, 165, { align: 'center' });
+
+    // Footer
+    doc.setFontSize(10);
+    doc.text('5MAXX INNOVATING BEYOND - ' + new Date().toLocaleDateString('pt-BR'), 148.5, 185, { align: 'center' });
+
+    doc.save(`Certificado_5MAXX_${userName.replace(/\s+/g, '_')}.pdf`);
+  };
 
   const handleAnswer = (index: number) => {
     if (isAnswered) return;
@@ -106,6 +166,7 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
     setQuizFinished(false);
     setSelectedOption(null);
     setIsAnswered(false);
+    setQuizStarted(false);
   };
 
   useEffect(() => {
@@ -400,7 +461,36 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
           </header>
 
           <main className="flex-1 p-8 flex flex-col justify-center max-w-sm mx-auto w-full">
-            {!quizFinished ? (
+            {!quizStarted ? (
+              <div className="animate-fade-in text-center">
+                <div className="w-20 h-20 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-amber-500/20">
+                  <Brain size={40} className="text-amber-500" />
+                </div>
+                <h2 className="text-3xl font-black italic uppercase text-white mb-4">Identifique-se</h2>
+                <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em] mb-10">Para gerar seu certificado ao final</p>
+                
+                <div className="space-y-6">
+                  <div className="relative">
+                    <input 
+                      type="text" 
+                      placeholder="Seu Nome Completo"
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-5 px-6 text-white font-bold outline-none focus:border-amber-500 transition-all text-center"
+                    />
+                  </div>
+                  
+                  <button 
+                    onClick={() => userName.trim() && setQuizStarted(true)}
+                    disabled={!userName.trim()}
+                    className="w-full bg-amber-500 disabled:opacity-30 text-black py-6 rounded-3xl font-black uppercase text-xs tracking-widest flex items-center justify-center gap-3 shadow-xl active:scale-95 transition-all"
+                  >
+                    Começar Desafio
+                    <ChevronRight size={18} />
+                  </button>
+                </div>
+              </div>
+            ) : !quizFinished ? (
               <div className="animate-fade-in">
                 <div className="mb-10">
                   <h2 className="text-2xl font-black italic uppercase leading-tight text-white mb-8">
@@ -466,9 +556,17 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
                 </p>
 
                 <div className="space-y-4">
+                  {score >= 8 && (
+                    <button 
+                      onClick={generateCertificate}
+                      className="w-full bg-amber-500 text-black py-6 rounded-3xl font-black uppercase text-xs tracking-widest flex items-center justify-center gap-3 shadow-lg shadow-amber-500/20"
+                    >
+                      <Download size={18} /> Baixar Certificado
+                    </button>
+                  )}
                   <button 
                     onClick={resetQuiz}
-                    className="w-full bg-white text-black py-6 rounded-3xl font-black uppercase text-xs tracking-widest flex items-center justify-center gap-3"
+                    className="w-full bg-white/5 border border-white/10 text-white py-6 rounded-3xl font-black uppercase text-xs tracking-widest flex items-center justify-center gap-3"
                   >
                     <RefreshCcw size={18} /> Tentar Novamente
                   </button>
