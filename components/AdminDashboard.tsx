@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Package, QrCode, Plus, LogOut, MapPin, Edit2, Trash2, X, Image as ImageIcon, Menu, Youtube, Tag, Loader2, Save, Store, Hash } from 'lucide-react';
+import { Package, QrCode, Plus, LogOut, MapPin, Edit2, Trash2, X, Image as ImageIcon, Menu, Youtube, Tag, Loader2, Save, Store, Hash, Search } from 'lucide-react';
 import { Product, Resale, ResaleStock } from '../types';
 import { apiService } from '../services/apiService';
 
@@ -23,6 +23,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, setProducts, 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
   
   const formRef = useRef<HTMLFormElement>(null);
   const resaleFormRef = useRef<HTMLFormElement>(null);
@@ -113,6 +114,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, setProducts, 
     });
   };
 
+  const filteredProducts = products.filter(p => 
+    p.nome.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    p.sku.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredResales = resales.filter(r => 
+    r.nome.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    r.cidade.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen flex bg-zinc-950 text-white font-sans">
       {/* Sidebar */}
@@ -175,6 +186,22 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, setProducts, 
           </button>
         </header>
 
+        <div className="mb-8 relative max-w-md">
+          <input 
+            type="text" 
+            placeholder={activeTab === 'products' ? "Pesquisar no estoque central..." : "Pesquisar revendas..."}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-12 text-sm text-white font-bold outline-none focus:border-white transition-all"
+          />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
+          {searchTerm && (
+            <button onClick={() => setSearchTerm('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white">
+              <X size={16} />
+            </button>
+          )}
+        </div>
+
         <div className="bg-zinc-900/40 rounded-[2.5rem] border border-white/10 overflow-hidden shadow-inner backdrop-blur-md">
           {activeTab === 'products' ? (
             <table className="w-full text-left">
@@ -186,7 +213,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, setProducts, 
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {products.map(p => (
+                {filteredProducts.map(p => (
                   <tr key={p.id} className="hover:bg-white/[0.02] transition-colors group">
                     <td className="px-8 py-6 font-mono text-xs text-white/50">{p.sku}</td>
                     <td className="px-8 py-6 flex items-center gap-4">
@@ -221,7 +248,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, setProducts, 
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {resales.map(r => (
+                {filteredResales.map(r => (
                   <tr key={r.id} className="hover:bg-white/[0.02] transition-colors group">
                     <td className="px-8 py-6 font-bold uppercase italic text-white">{r.nome}</td>
                     <td className="px-8 py-6 text-white/40 text-xs">{r.cidade}</td>

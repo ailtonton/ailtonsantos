@@ -216,7 +216,7 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
         <aside className={`relative w-72 bg-zinc-950 h-full shadow-2xl transition-transform duration-300 ease-out flex flex-col border-r border-white/10 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
           <div className="p-8 border-b border-white/5">
             <div className="flex justify-between items-center mb-6">
-              <img src="/logo.png" alt="5MAXX" className="h-8 object-contain" referrerPolicy="no-referrer" />
+              <img src="https://i.ibb.co/yBXgVXNR/logo.png" alt="5MAXX" className="h-8 object-contain" referrerPolicy="no-referrer" />
               <button onClick={() => setIsMenuOpen(false)} className="text-white/40 hover:text-white"><X size={24} /></button>
             </div>
             <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.3em]">Menu de Navegação</p>
