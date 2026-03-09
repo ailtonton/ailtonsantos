@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { jsPDF } from 'jspdf';
-import { Camera, Search, X, Info, ChevronRight, Box, Menu, LayoutGrid, Layers, Scissors, Tag, Sparkles, Loader2, RefreshCw, Download, Trophy, CheckCircle2, AlertCircle, HelpCircle, MapPin, Store, Phone, LogOut, Brain, RefreshCcw, XCircle } from 'lucide-react';
+import { Camera, Search, X, Info, ChevronRight, Box, Menu, LayoutGrid, Layers, Scissors, Tag, Sparkles, Loader2, RefreshCw, Download, Trophy, CheckCircle2, AlertCircle, HelpCircle, MapPin, Store, Phone, LogOut, Brain, RefreshCcw, XCircle, Share2 } from 'lucide-react';
 import { Product, Resale, ResaleStock } from '../types';
 import { apiService } from '../services/apiService';
 import Scanner from './Scanner';
@@ -201,6 +201,28 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
     return (match && match[2].length === 11) ? match[2] : null;
   };
 
+  const handleShare = async (product: Product, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    const shareData = {
+      title: `5MAXX - ${product.nome}`,
+      text: `Confira o produto ${product.nome} (${product.sku}) no catálogo 5MAXX!`,
+      url: window.location.origin,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+        alert('Link copiado para a área de transferência!');
+      }
+    } catch (err) {
+      if ((err as Error).name !== 'AbortError') {
+        console.error('Erro ao compartilhar:', err);
+      }
+    }
+  };
+
   return (
     <div className="max-w-md mx-auto min-h-screen bg-black flex flex-col relative pb-24 overflow-x-hidden border-x border-white/5 font-sans">
       
@@ -310,9 +332,17 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
                 <div className="flex-1">
                   <p className="text-[9px] font-black text-white/30 mb-1 uppercase tracking-widest">{p.sku}</p>
                   <p className="text-lg font-black text-white uppercase italic truncate">{p.nome}</p>
-                  <div className="mt-4 flex items-center gap-2 text-amber-500">
-                    <span className="text-[9px] font-black uppercase tracking-widest">Detalhes Técnicos</span>
-                    <ChevronRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                  <div className="mt-4 flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-amber-500">
+                      <span className="text-[9px] font-black uppercase tracking-widest">Detalhes Técnicos</span>
+                      <ChevronRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <button 
+                      onClick={(e) => handleShare(p, e)}
+                      className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-white/40 hover:text-white transition-all"
+                    >
+                      <Share2 size={14} />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -412,7 +442,15 @@ const CatalogApp: React.FC<CatalogAppProps> = ({ products, onLogout }) => {
             <div className="flex gap-6 mb-10">
               <img src={selectedProduct.imageUrl} className="w-28 h-28 rounded-3xl object-cover border border-white/10" />
               <div className="flex-1">
-                <p className="text-[9px] font-black text-white/40 uppercase mb-2">{selectedProduct.sku}</p>
+                <div className="flex justify-between items-start">
+                  <p className="text-[9px] font-black text-white/40 uppercase mb-2">{selectedProduct.sku}</p>
+                  <button 
+                    onClick={() => handleShare(selectedProduct)}
+                    className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-white/40 hover:text-white transition-all"
+                  >
+                    <Share2 size={16} />
+                  </button>
+                </div>
                 <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter leading-tight">{selectedProduct.nome}</h3>
               </div>
             </div>
